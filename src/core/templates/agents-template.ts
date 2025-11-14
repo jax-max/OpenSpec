@@ -4,13 +4,13 @@ Instructions for AI coding assistants using OpenSpec for spec-driven development
 
 ## TL;DR Quick Checklist
 
-- Search existing work: \`openspec spec list --long\`, \`openspec list\` (use \`rg\` only for full-text search)
-- Decide scope: new capability vs modify existing capability
-- Pick a unique \`change-id\`: kebab-case, verb-led (\`add-\`, \`update-\`, \`remove-\`, \`refactor-\`)
-- Scaffold: \`proposal.md\`, \`tasks.md\`, \`design.md\` (only if needed), and delta specs per affected capability
-- Write deltas: use \`## ADDED|MODIFIED|REMOVED|RENAMED Requirements\`; include at least one \`#### Scenario:\` per requirement
-- Validate: \`openspec validate [change-id] --strict\` and fix issues
-- Request approval: Do not start implementation until proposal is approved
+- 搜索现有工作: \`openspec spec list --long\`, \`openspec list\` (仅用 \`rg\` 进行全文搜索)
+- 确定范围: 新能力 vs 修改现有能力
+- 选择唯一的 \`change-id\`: kebab-case，动词引导 (\`add-\`, \`update-\`, \`remove-\`, \`refactor-\`)
+- 创建脚手架: \`proposal.md\` (概设), \`design.md\` (详设, 必须), \`tasks.md\`, 以及每个受影响能力的 delta specs (详设)
+- 编写 deltas: 使用 \`## ADDED|MODIFIED|REMOVED|RENAMED Requirements\`; 每个 requirement 至少包含一个 \`#### Scenario:\` (使用 mermaid 流程图)
+- 验证: \`openspec validate [change-id] --strict\` 并修复问题
+- 请求批准: 在提案批准前不要开始实施
 
 ## Three-Stage Workflow
 
@@ -40,21 +40,26 @@ Skip proposal for:
 - Configuration changes
 - Tests for existing behavior
 
-**Workflow**
-1. Review \`openspec/project.md\`, \`openspec list\`, and \`openspec list --specs\` to understand current context.
-2. Choose a unique verb-led \`change-id\` and scaffold \`proposal.md\`, \`tasks.md\`, optional \`design.md\`, and spec deltas under \`openspec/changes/<id>/\`.
-3. Draft spec deltas using \`## ADDED|MODIFIED|REMOVED Requirements\` with at least one \`#### Scenario:\` per requirement.
-4. Run \`openspec validate <id> --strict\` and resolve any issues before sharing the proposal.
+**工作流程**
+1. 查看 \`openspec/project.md\`, \`openspec list\`, 和 \`openspec list --specs\` 以了解当前上下文。
+2. 选择唯一的动词引导的 \`change-id\` 并在 \`openspec/changes/<id>/\` 下创建脚手架：
+   - \`proposal.md\` (概设)
+   - \`design.md\` (详设，必须创建)
+   - \`tasks.md\` (实施步骤)
+   - \`specs/\` 下的 spec deltas (详设)
+3. 使用 \`## ADDED|MODIFIED|REMOVED Requirements\` 编写 spec deltas，每个 requirement 至少包含一个 \`#### Scenario:\` (使用 mermaid 流程图)。
+4. 运行 \`openspec validate <id> --strict\` 并在分享提案前解决所有问题。
 
 ### Stage 2: Implementing Changes
-Track these steps as TODOs and complete them one by one.
-1. **Read proposal.md** - Understand what's being built
-2. **Read design.md** (if exists) - Review technical decisions
-3. **Read tasks.md** - Get implementation checklist
-4. **Implement tasks sequentially** - Complete in order
-5. **Confirm completion** - Ensure every item in \`tasks.md\` is finished before updating statuses
-6. **Update checklist** - After all work is done, set every task to \`- [x]\` so the list reflects reality
-7. **Approval gate** - Do not start implementation until the proposal is reviewed and approved
+将这些步骤作为 TODOs 跟踪并逐一完成。
+1. **阅读 proposal.md** - 理解概设（需求背景和系统时序）
+2. **阅读 design.md** - 查看详设（技术决策、接口设计、数据库设计等）
+3. **阅读 specs/下的 spec.md** - 查看详设（功能点流程图和场景）
+4. **阅读 tasks.md** - 获取实施检查清单
+5. **按顺序实施任务** - 按顺序完成
+6. **确认完成** - 确保 \`tasks.md\` 中的每一项在更新状态前已完成
+7. **更新检查清单** - 所有工作完成后，将每个任务设置为 \`- [x]\` 以反映实际情况
+8. **批准门控** - 在提案评审并批准前不要开始实施
 
 ### Stage 3: Archiving Changes
 After deployment, create separate PR to:
@@ -124,20 +129,20 @@ openspec validate [change] --strict
 
 \`\`\`
 openspec/
-├── project.md              # Project conventions
-├── specs/                  # Current truth - what IS built
-│   └── [capability]/       # Single focused capability
-│       ├── spec.md         # Requirements and scenarios
-│       └── design.md       # Technical patterns
-├── changes/                # Proposals - what SHOULD change
+├── project.md              # 项目规约
+├── specs/                  # 当前真相 - 已构建的内容
+│   └── [capability]/       # 单一聚焦的能力域
+│       ├── spec.md         # 需求和场景（详设）
+│       └── design.md       # 技术模式（详设）
+├── changes/                # 提案 - 应当变更的内容
 │   ├── [change-name]/
-│   │   ├── proposal.md     # Why, what, impact
-│   │   ├── tasks.md        # Implementation checklist
-│   │   ├── design.md       # Technical decisions (optional; see criteria)
-│   │   └── specs/          # Delta changes
+│   │   ├── proposal.md     # 概设：需求描述、产品交互、系统时序图
+│   │   ├── design.md       # 详设：接口设计、数据库设计、运维专项（必须）
+│   │   ├── tasks.md        # 实施检查清单
+│   │   └── specs/          # Delta 变更（详设）
 │   │       └── [capability]/
 │   │           └── spec.md # ADDED/MODIFIED/REMOVED
-│   └── archive/            # Completed changes
+│   └── archive/            # 已完成的变更
 \`\`\`
 
 ## Creating Change Proposals
@@ -160,130 +165,411 @@ New request?
 
 2. **Write proposal.md:**
 \`\`\`markdown
-# Change: [Brief description of change]
+## 一、需求描述
+需求背景，业务诉求，简练语言描述关键要素
 
-## Why
-[1-2 sentences on problem/opportunity]
+## 二、产品交互（可选）
+C端客户动线，或运营内管操作动线，用mermaid时序图描述
 
-## What Changes
-- [Bullet list of changes]
-- [Mark breaking changes with **BREAKING**]
+## 三、系统间时序图
+功能点向下系统间交互时序，主要目的为明确系统职责边界，确认分工
 
-## Impact
-- Affected specs: [list capabilities]
-- Affected code: [key files/systems]
+### 时序图要求
+- 使用 mermaid 格式绘制
+- 内容粒度：
+  - 人->系统：xx角色访问xx页面，操作xx内容
+  - 系统->系统：A调用B的xx接口（rmb或者http），做xx动作
+- 使用 mermaid 生成图：
+- 差异分支流程用 alt 标签，并发用 par 标签
+- 调用内部组件用自引用标识，并写出组件名和目的
+
+\`\`\`mermaid
+sequenceDiagram
+    participant User as 用户
+    participant System as 系统A
+    participant Service as 系统B
+    
+    User->>System: 访问功能页面
+    System->>Service: 调用接口（HTTP）
+    Service-->>System: 返回结果
+    System-->>User: 展示结果
+\`\`\`
+
+## 四、详设文档说明
+本需求的详设包含两部分：
+- **design.md**：技术设计详情（接口设计、数据库设计、运维专项等）
+- **specs/[capability]/spec.md**：功能点详细流程图和场景描述
+
+详设文档位置：
+- \`openspec/changes/[change-id]/design.md\`
+- \`openspec/changes/[change-id]/specs/[capability]/spec.md\`
 \`\`\`
 
 3. **Create spec deltas:** \`specs/[capability]/spec.md\`
+
+**重要提示**：如果功能包含多个顺序执行的步骤（如开户流程：验三→联网核查→刷脸→查征信），应该将这些步骤放在**一个 Scenario 的流程图中**，而不是拆成多个 Scenario。只有当存在真正不同的业务场景（如不同用户类型、不同渠道）时，才使用多个 Scenario。
+
 \`\`\`markdown
 ## ADDED Requirements
-### Requirement: New Feature
-The system SHALL provide...
+### Requirement: 功能名称
+系统应当提供...的能力
 
-#### Scenario: Success case
-- **WHEN** user performs action
-- **THEN** expected result
+#### Scenario: 场景名称
+使用 mermaid 流程图描述，必须包含4要素：
+1. 前置条件：含"当前状态校验 + 业务规则"
+2. 触发动作：细化到"用户操作/系统任务/外部回调"
+3. 后置操作：含"主档状态更新 + 关联操作 + 日志"
+4. 关联接口/组件：补充方法签名或接口 URL + 参数
+
+**如果流程包含多个步骤，将所有步骤放在一个流程图中**：
+
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件: 当前状态=ORDER_SUBMITTED 且 金额≥100] --> B[触发动作: 审核员点击通过按钮]
+    B --> C[步骤1: 验证订单信息]
+    C --> D[步骤2: 检查库存]
+    D --> E[步骤3: 计算价格]
+    E --> F[后置操作: 更新 t_order.status 为 PASS]
+    F --> G[关联接口: POST /api/v1/order/audit]
+    G --> H[插入操作日志]
+\\\`\\\`\\\`
 
 ## MODIFIED Requirements
-### Requirement: Existing Feature
-[Complete modified requirement]
+### Requirement: 已有功能名称
+[完整的修改后的需求描述，包含所有场景]
+
+#### Scenario: 修改后的场景
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件] --> B[触发动作]
+    B --> C[后置操作]
+    C --> D[关联接口/组件]
+\\\`\\\`\\\`
 
 ## REMOVED Requirements
-### Requirement: Old Feature
-**Reason**: [Why removing]
-**Migration**: [How to handle]
+### Requirement: 旧功能名称
+**移除原因**: [说明为何移除]
+**迁移方案**: [如何处理现有使用]
 \`\`\`
-If multiple capabilities are affected, create multiple delta files under \`changes/[change-id]/specs/<capability>/spec.md\`—one per capability.
+如果影响多个能力域，在 \`changes/[change-id]/specs/<capability>/spec.md\` 下创建多个 delta 文件—每个能力域一个。
 
 4. **Create tasks.md:**
 \`\`\`markdown
-## 1. Implementation
-- [ ] 1.1 Create database schema
-- [ ] 1.2 Implement API endpoint
-- [ ] 1.3 Add frontend component
-- [ ] 1.4 Write tests
+> **重要提醒**：实施前请务必阅读 \`openspec/project.md\` 了解项目开发规约和编码规范。
+
+## 1. 实施步骤
+- [ ] 1.1 数据库设计
+- [ ] 1.2 组件开发（如有）
+- [ ] 1.3 接口实现
+- [ ] 1.4 测试验证
 \`\`\`
 
-5. **Create design.md when needed:**
-Create \`design.md\` if any of the following apply; otherwise omit it:
-- Cross-cutting change (multiple services/modules) or a new architectural pattern
-- New external dependency or significant data model changes
-- Security, performance, or migration complexity
-- Ambiguity that benefits from technical decisions before coding
+5. **Create design.md (必须):**
+\`design.md\` 是详设文档，必须创建。包含技术决策、接口设计、数据库设计等详细内容。
 
-Minimal \`design.md\` skeleton:
+详设文档模板：
 \`\`\`markdown
-## Context
-[Background, constraints, stakeholders]
+## 一、系统模型与本次改动
+### 系统模型总图
+在 \`proposal.md\` 中的系统间时序图基础上，详细描述系统模型。
 
-## Goals / Non-Goals
-- Goals: [...]
-- Non-Goals: [...]
+### 改动点说明
+针对每个改动点详细说明：
+- **改动背景**：为什么要改
+- **改动范围**：影响哪些模块/组件
+- **改动目的**：达成什么目标
+- **与 proposal.md 的关系**：如何对应概设中的时序图
 
-## Decisions
-- Decision: [What and why]
-- Alternatives considered: [Options + rationale]
+## 二、接口设计
+### 接口定义清单
+列出所有涉及的接口，明确是新增还是修改：
 
-## Risks / Trade-offs
-- [Risk] → Mitigation
+| 接口路径 | 方法 | 类型 | 说明 | 修改点 |
+|---------|------|------|------|--------|
+| /api/v1/order/create | POST | 新增 | 创建订单 | - |
+| /api/v1/order/audit | POST | 修改 | 审核订单 | 新增 remarks 字段 |
 
-## Migration Plan
-[Steps, rollback]
+### 接口详细设计
+对每个接口提供完整设计：
 
-## Open Questions
-- [...]
+**接口名称**：订单审核接口
+- **路径**：POST /api/v1/order/audit
+- **请求参数**：
+  \\\`\\\`\\\`json
+  {
+    "orderId": "Long, 订单ID",
+    "action": "String, 审核动作: PASS/REJECT",
+    "remarks": "String, 审核备注"
+  }
+  \\\`\\\`\\\`
+- **返回结果**：
+  \\\`\\\`\\\`json
+  {
+    "code": 0,
+    "message": "success",
+    "data": {
+      "orderId": "Long",
+      "status": "String"
+    }
+  }
+  \\\`\\\`\\\`
+- **枚举值说明**：
+  - action: PASS(通过), REJECT(驳回)
+  - status: PENDING(待审核), APPROVED(已通过), REJECTED(已驳回)
+- **错误码**：
+  - 1001: 订单不存在
+  - 1002: 订单状态不允许审核
+
+### 接口流程图（详设关键产出，AI 生成代码关键输入）
+需绘制 场景 - 功能点 - 接口 向下流程图，使用 mermaid 格式。此流程图与 \`specs/\` 下的 spec.md 中的 Scenario 流程图相对应，但更详细。
+
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件: 订单状态=PENDING] --> B[触发动作: 调用审核接口]
+    B --> C{审核动作}
+    C -->|PASS| D[更新订单状态为APPROVED]
+    C -->|REJECT| E[更新订单状态为REJECTED]
+    D --> F[插入审核日志]
+    E --> F
+    F --> G[返回结果]
+\\\`\\\`\\\`
+
+**流程图要求**：
+- 包括所有主流程 + 所有分支流程、分支判断逻辑
+- 每条流转路径需明确 4 要素：
+  1. **前置条件**：含"当前状态校验 + 业务规则"（例：当前 = ORDER_SUBMITTED 且 金额≥100）
+  2. **触发动作**：细化到"用户操作/系统任务/外部回调"（例：审核员点「通过」按钮）
+  3. **后置操作**：含"主档状态更新 + 关联操作 + 日志"（例：更新 t_order.status 为 PASS、插操作日志）
+  4. **关联接口/组件**：补充方法签名（例：OrderAuditService#passAudit(Long, String)）
+
+## 三、组件设计
+### 组件定义
+组件指可在多产品领域复用的流程中的公共逻辑。
+
+### 组件说明
+若需求涉及组件，需说明：
+- 功能描述：[组件做什么]
+- 复用场景：[在哪些场景使用]
+- 输入参数：[参数列表]
+- 输出参数：[返回值]
+- 交互关系：[与其他组件的关系]
+
+**若不涉及组件**，标注："本需求无相关组件设计"
+
+**新增组件**：需拉相关领域同事评审
+
+## 四、数据库设计
+### 设计原则
+- 字段设计：遵循项目规约（见 \`openspec/project.md\`）
+- 数据管理：遵循数据管理规范
+
+### 表结构设计
+直接在此处编写完整的表结构设计：
+
+**表名**：t_order（订单表）
+- **表说明**：存储订单主档信息
+- **字段列表**：
+
+| 字段名 | 类型 | 长度 | 是否必填 | 说明 | 索引 |
+|--------|------|------|----------|------|------|
+| id | BIGINT | - | 是 | 主键ID | PRIMARY |
+| order_no | VARCHAR | 64 | 是 | 订单编号 | UNIQUE |
+| status | VARCHAR | 32 | 是 | 订单状态 | INDEX |
+| amount | DECIMAL | 18,2 | 是 | 订单金额 | - |
+| create_time | DATETIME | - | 是 | 创建时间 | INDEX |
+| update_time | DATETIME | - | 是 | 更新时间 | - |
+
+**表关系说明**：
+- t_order 与 t_order_audit_log 是一对多关系
+
+**ER 图（可选）**：若需要，可使用 mermaid 绘制 ER 图。
+
+## 五、关键功能与测试重点
+### 关键功能说明
+针对触客、资损相关的关键功能改动，详细说明：
+- 业务逻辑
+- 触发条件
+- 处理流程
+- 涉及的业务规则
+
+### 测试重点
+- 功能正确性测试：关键功能是否符合业务需求
+- 异常场景测试：如触客渠道故障、资损数据异常时的功能表现和 SOP 方法
+
+### 异常处理预案
+触客、资损场景必须有异常处理预案：
+- 异常场景现象
+- 处理方案 SOP
+
+### 兼容性
+参考金融严谨性"兼容性"章节。
+
+## 六、运维专项
+### 必须项
+在此处直接编写运维相关内容：
+
+#### 版本信息
+- 版本号：v1.2.0
+- 发布时间：2024-01-15
+- 依赖版本：[列出关键依赖及版本]
+
+#### 兼容性设计
+- 向前兼容：[说明如何与旧版本兼容]
+- 向后兼容：[说明如何支持新版本]
+- 灰度策略：[如何逐步发布]
+
+#### IT验证方法
+1. 单元测试：[测试范围]
+2. 集成测试：[测试场景]
+3. 性能测试：[性能指标]
+4. 验收标准：[通过标准]
+
+#### 回滚方案
+- 回滚触发条件：[什么情况下回滚]
+- 回滚步骤：
+  1. [步骤1]
+  2. [步骤2]
+- 数据回滚：[如何处理已产生的数据]
+
+### 数据清洗（必须场景）
+以下场景必须提供数据清洗方案：
+1. 数据修改超过5000或修改业务数据表超过单表数据量20%
+2. 数据清洗违反基本原则（未走索引、无备份、无回退方案）但确认需要执行
+3. 数据清洗流程复杂且历史未执行过，有时序要求且与业务强耦合
+4. 操作手册缺乏必要部分（风险评估、操作方案、验证方案、回退方案）
+5. 数据清洗影响业务可用率或需要业务停服配合
+6. 运维评估存在高风险的修数方案
+
+**数据清洗方案模板**：
+- **风险评估**：[评估影响范围和风险等级]
+- **操作方案**：[详细的SQL或脚本，包含备份步骤]
+- **验证方案**：[如何验证数据正确性]
+- **回退方案**：[出错时如何恢复]
+
+### 其他运维项
+#### 数据清理
+- 新增流水表必须说明清理策略
+- 清理周期：[如30天]
+- 清理方式：[归档/删除]
+
+#### 功能开关（关键功能必须）
+对触客、资损相关的关键功能必须设计开关：
+- 开关名称：order_audit_enabled
+- 默认状态：关闭
+- 开启条件：[什么情况下开启]
+
+#### HOLD批量（关键功能必须）
+对触客、资损相关的关键功能必须支持批量暂停：
+- HOLD机制：[如何暂停批量处理]
+- 恢复机制：[如何恢复]
 \`\`\`
 
 ## Spec File Format
 
 ### Critical: Scenario Formatting
 
-**CORRECT** (use #### headers):
+**正确格式** (使用 #### 标题 + mermaid 流程图):
 \`\`\`markdown
-#### Scenario: User login success
-- **WHEN** valid credentials provided
-- **THEN** return JWT token
+#### Scenario: 用户登录成功
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件: 用户已注册 且 账号状态正常] --> B[触发动作: 用户输入用户名密码点击登录]
+    B --> C[后置操作: 生成 JWT token 并更新登录时间]
+    C --> D[关联接口: POST /api/v1/auth/login]
+\\\`\\\`\\\`
 \`\`\`
 
-**WRONG** (don't use bullets or bold):
+**错误格式** (不要使用项目符号或加粗):
 \`\`\`markdown
 - **Scenario: User login**  ❌
 **Scenario**: User login     ❌
 ### Scenario: User login      ❌
 \`\`\`
 
-Every requirement MUST have at least one scenario.
+**Scenario 要求**：
+- 每个 requirement 必须至少有一个 scenario
+- 使用 \`#### Scenario:\` 标题（4个井号）
+- 标题下方使用 mermaid 流程图描述场景
+- 流程图必须包含4要素：前置条件、触发动作、后置操作、关联接口/组件
+
+**重要：Scenario 与流程步骤的区别**：
+- **Scenario 是完整的业务场景**，包含完整的流程（可能包含多个步骤）
+- **流程步骤（如验三、联网核查、刷脸、查征信）应该放在一个 Scenario 的流程图中**，作为流程的不同节点
+- **不要将流程步骤拆成多个 Scenario**。只有当存在真正不同的业务场景（如不同用户类型、不同渠道导致不同流程）时，才使用多个 Scenario
+
+**正确示例：包含多个步骤的完整流程**
+\`\`\`markdown
+### Requirement: 开户申请流程
+系统应当提供完整的开户申请处理能力，包括身份验证、联网核查、人脸识别和征信查询等步骤。
+
+#### Scenario: 标准开户申请流程
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件: 用户已填写开户信息 且 状态=待审核] --> B[触发动作: 用户提交开户申请]
+    B --> C[步骤1: 验三 - 验证三要素]
+    C --> D{验三结果}
+    D -->|通过| E[步骤2: 联网核查 - 调用公安系统]
+    D -->|失败| Z[拒绝开户]
+    E --> F{联网核查结果}
+    F -->|通过| G[步骤3: 刷脸 - 人脸识别验证]
+    F -->|失败| Z
+    G --> H{刷脸结果}
+    H -->|通过| I[步骤4: 查征信 - 查询征信系统]
+    H -->|失败| Z
+    I --> J{征信结果}
+    J -->|通过| K[后置操作: 更新账户状态为已开户 并 生成账户信息]
+    J -->|失败| Z
+    K --> L[关联接口: POST /api/v1/account/create]
+    L --> M[插入开户日志]
+\\\`\\\`\\\`
+\`\`\`
+
+**错误示例：将流程步骤拆成多个 Scenario** ❌
+\`\`\`markdown
+### Requirement: 开户申请流程
+系统应当提供开户申请处理能力。
+
+#### Scenario: 验三
+[只有验三步骤] ❌ 这不是场景，是步骤
+
+#### Scenario: 联网核查
+[只有联网核查步骤] ❌ 这不是场景，是步骤
+
+#### Scenario: 刷脸
+[只有刷脸步骤] ❌ 这不是场景，是步骤
+\`\`\`
 
 ### Requirement Wording
-- Use SHALL/MUST for normative requirements (avoid should/may unless intentionally non-normative)
+- 使用"应当"、"必须"等规范性词语描述需求（避免使用"可以"、"可能"等非规范性词语）
+- Requirement 名称可以使用中文
 
 ### Delta Operations
 
-- \`## ADDED Requirements\` - New capabilities
-- \`## MODIFIED Requirements\` - Changed behavior
-- \`## REMOVED Requirements\` - Deprecated features
-- \`## RENAMED Requirements\` - Name changes
+- \`## ADDED Requirements\` - 新增能力
+- \`## MODIFIED Requirements\` - 变更行为
+- \`## REMOVED Requirements\` - 废弃功能
+- \`## RENAMED Requirements\` - 名称变更
 
-Headers matched with \`trim(header)\` - whitespace ignored.
+标题匹配使用 \`trim(header)\` - 忽略空白字符。
 
 #### When to use ADDED vs MODIFIED
-- ADDED: Introduces a new capability or sub-capability that can stand alone as a requirement. Prefer ADDED when the change is orthogonal (e.g., adding "Slash Command Configuration") rather than altering the semantics of an existing requirement.
-- MODIFIED: Changes the behavior, scope, or acceptance criteria of an existing requirement. Always paste the full, updated requirement content (header + all scenarios). The archiver will replace the entire requirement with what you provide here; partial deltas will drop previous details.
-- RENAMED: Use when only the name changes. If you also change behavior, use RENAMED (name) plus MODIFIED (content) referencing the new name.
+- **ADDED（新增）**: 引入可以独立存在的新能力或子能力。当变更是正交的（例如添加"斜杠命令配置"）而不是改变现有需求的语义时，优先使用 ADDED。
+- **MODIFIED（修改）**: 改变现有需求的行为、范围或验收标准。始终粘贴完整的、更新后的需求内容（标题 + 所有场景）。归档器将用你提供的内容替换整个需求；部分 delta 将导致之前的细节丢失。
+- **RENAMED（重命名）**: 仅当名称改变时使用。如果同时改变行为，使用 RENAMED（名称）加 MODIFIED（内容）引用新名称。
 
-Common pitfall: Using MODIFIED to add a new concern without including the previous text. This causes loss of detail at archive time. If you aren’t explicitly changing the existing requirement, add a new requirement under ADDED instead.
+**常见陷阱**: 使用 MODIFIED 添加新关注点而不包含之前的文本。这会在归档时导致细节丢失。如果你不是明确地改变现有需求，而是在 ADDED 下添加新需求。
 
-Authoring a MODIFIED requirement correctly:
-1) Locate the existing requirement in \`openspec/specs/<capability>/spec.md\`.
-2) Copy the entire requirement block (from \`### Requirement: ...\` through its scenarios).
-3) Paste it under \`## MODIFIED Requirements\` and edit to reflect the new behavior.
-4) Ensure the header text matches exactly (whitespace-insensitive) and keep at least one \`#### Scenario:\`.
+**正确编写 MODIFIED 需求的步骤**:
+1) 在 \`openspec/specs/<capability>/spec.md\` 中定位现有需求。
+2) 复制整个需求块（从 \`### Requirement: ...\` 到它的所有场景）。
+3) 将其粘贴到 \`## MODIFIED Requirements\` 下并编辑以反映新行为。
+4) 确保标题文本精确匹配（忽略空白符）并保留至少一个 \`#### Scenario:\`。
 
-Example for RENAMED:
+**RENAMED 示例**:
 \`\`\`markdown
 ## RENAMED Requirements
-- FROM: \`### Requirement: Login\`
-- TO: \`### Requirement: User Authentication\`
+- FROM: \`### Requirement: 用户登录\`
+- TO: \`### Requirement: 用户身份认证\`
 \`\`\`
 
 ## Troubleshooting
@@ -318,31 +604,56 @@ openspec show [spec] --json -r 1
 ## Happy Path Script
 
 \`\`\`bash
-# 1) Explore current state
+# 1) 探索当前状态
 openspec spec list --long
 openspec list
-# Optional full-text search:
+# 可选的全文搜索:
 # rg -n "Requirement:|Scenario:" openspec/specs
 # rg -n "^#|Requirement:" openspec/changes
 
-# 2) Choose change id and scaffold
+# 2) 选择 change id 并创建脚手架
 CHANGE=add-two-factor-auth
 mkdir -p openspec/changes/$CHANGE/{specs/auth}
-printf "## Why\\n...\\n\\n## What Changes\\n- ...\\n\\n## Impact\\n- ...\\n" > openspec/changes/$CHANGE/proposal.md
-printf "## 1. Implementation\\n- [ ] 1.1 ...\\n" > openspec/changes/$CHANGE/tasks.md
+cat > openspec/changes/$CHANGE/proposal.md << 'EOF'
+## 一、需求描述
+实现双因素认证功能，提升账户安全性
 
-# 3) Add deltas (example)
-cat > openspec/changes/$CHANGE/specs/auth/spec.md << 'EOF'
-## ADDED Requirements
-### Requirement: Two-Factor Authentication
-Users MUST provide a second factor during login.
+## 二、产品交互（可选）
+用户登录时需要输入密码 + 验证码
 
-#### Scenario: OTP required
-- **WHEN** valid credentials are provided
-- **THEN** an OTP challenge is required
+## 三、系统间时序图
+[添加 mermaid 时序图]
+
+## 四、详设文档路径
+\\\`openspec/changes/add-two-factor-auth/design.md\\\`
 EOF
 
-# 4) Validate
+cat > openspec/changes/$CHANGE/tasks.md << 'EOF'
+> **重要提醒**：实施前请务必阅读 \\\`openspec/project.md\\\` 了解项目开发规约和编码规范。
+
+## 1. 实施步骤
+- [ ] 1.1 数据库设计
+- [ ] 1.2 组件开发（如有）
+- [ ] 1.3 接口实现
+- [ ] 1.4 测试验证
+EOF
+
+# 3) 添加 deltas (示例)
+cat > openspec/changes/$CHANGE/specs/auth/spec.md << 'EOF'
+## ADDED Requirements
+### Requirement: 双因素认证
+用户必须在登录时提供第二因素验证。
+
+#### Scenario: OTP 验证流程
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件: 用户已输入正确密码] --> B[触发动作: 系统发送 OTP 到用户手机]
+    B --> C[后置操作: 验证 OTP 并生成会话]
+    C --> D[关联接口: POST /api/v1/auth/verify-otp]
+\\\`\\\`\\\`
+EOF
+
+# 4) 验证
 openspec validate $CHANGE --strict
 \`\`\`
 
@@ -354,23 +665,39 @@ openspec/changes/add-2fa-notify/
 ├── tasks.md
 └── specs/
     ├── auth/
-    │   └── spec.md   # ADDED: Two-Factor Authentication
+    │   └── spec.md   # ADDED: 双因素认证
     └── notifications/
-        └── spec.md   # ADDED: OTP email notification
+        └── spec.md   # ADDED: OTP 邮件通知
 \`\`\`
 
 auth/spec.md
 \`\`\`markdown
 ## ADDED Requirements
-### Requirement: Two-Factor Authentication
-...
+### Requirement: 双因素认证
+用户必须在登录时提供第二因素验证。
+
+#### Scenario: 验证流程
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件] --> B[触发动作]
+    B --> C[后置操作]
+    C --> D[关联接口]
+\\\`\\\`\\\`
 \`\`\`
 
 notifications/spec.md
 \`\`\`markdown
 ## ADDED Requirements
-### Requirement: OTP Email Notification
-...
+### Requirement: OTP 邮件通知
+系统应当在用户登录时发送 OTP 验证码邮件。
+
+#### Scenario: 发送邮件
+\\\`\\\`\\\`mermaid
+flowchart TD
+    A[前置条件: 用户请求登录] --> B[触发动作: 生成 OTP]
+    B --> C[后置操作: 发送邮件并记录]
+    C --> D[关联接口: POST /api/v1/notifications/send-otp]
+\\\`\\\`\\\`
 \`\`\`
 
 ## Best Practices
@@ -435,15 +762,15 @@ Only add complexity with:
 ## Quick Reference
 
 ### Stage Indicators
-- \`changes/\` - Proposed, not yet built
-- \`specs/\` - Built and deployed
-- \`archive/\` - Completed changes
+- \`changes/\` - 提案中，尚未构建
+- \`specs/\` - 已构建并部署
+- \`archive/\` - 已完成的变更
 
 ### File Purposes
-- \`proposal.md\` - Why and what
-- \`tasks.md\` - Implementation steps
-- \`design.md\` - Technical decisions
-- \`spec.md\` - Requirements and behavior
+- \`proposal.md\` - 概设：需求描述、产品交互、系统时序图
+- \`design.md\` - 详设：接口设计、数据库设计、运维专项（必须）
+- \`spec.md\` - 详设：功能点流程图和场景描述
+- \`tasks.md\` - 实施步骤
 
 ### CLI Essentials
 \`\`\`bash
