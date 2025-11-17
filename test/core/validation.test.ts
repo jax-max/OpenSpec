@@ -363,6 +363,18 @@ The system MUST implement a circuit breaker with three states.
       const specPath = path.join(specsDir, 'spec.md');
       await fs.writeFile(specPath, deltaSpec);
 
+      // Add required design.md
+      const designMd = `## Context
+Test context
+
+## Goals / Non-Goals
+- Goals: Test goal
+
+## Decisions
+- Decision: Test decision`;
+      const designPath = path.join(changeDir, 'design.md');
+      await fs.writeFile(designPath, designMd);
+
       const validator = new Validator(true);
       const report = await validator.validateChangeDeltaSpecs(changeDir);
 
@@ -392,6 +404,18 @@ The system SHALL handle all errors gracefully.
 
       const specPath = path.join(specsDir, 'spec.md');
       await fs.writeFile(specPath, deltaSpec);
+
+      // Add required design.md
+      const designMd = `## Context
+Test context
+
+## Goals / Non-Goals
+- Goals: Test goal
+
+## Decisions
+- Decision: Test decision`;
+      const designPath = path.join(changeDir, 'design.md');
+      await fs.writeFile(designPath, designMd);
 
       const validator = new Validator(true);
       const report = await validator.validateChangeDeltaSpecs(changeDir);
@@ -450,6 +474,18 @@ The system SHALL implement this feature.
       const specPath = path.join(specsDir, 'spec.md');
       await fs.writeFile(specPath, deltaSpec);
 
+      // Add required design.md
+      const designMd = `## Context
+Test context
+
+## Goals / Non-Goals
+- Goals: Test goal
+
+## Decisions
+- Decision: Test decision`;
+      const designPath = path.join(changeDir, 'design.md');
+      await fs.writeFile(designPath, designMd);
+
       const validator = new Validator(true);
       const report = await validator.validateChangeDeltaSpecs(changeDir);
 
@@ -477,6 +513,18 @@ The system MUST support mixed case delta headers.
       const specPath = path.join(specsDir, 'spec.md');
       await fs.writeFile(specPath, deltaSpec);
 
+      // Add required design.md
+      const designMd = `## Context
+Test context
+
+## Goals / Non-Goals
+- Goals: Test goal
+
+## Decisions
+- Decision: Test decision`;
+      const designPath = path.join(changeDir, 'design.md');
+      await fs.writeFile(designPath, designMd);
+
       const validator = new Validator(true);
       const report = await validator.validateChangeDeltaSpecs(changeDir);
 
@@ -484,6 +532,109 @@ The system MUST support mixed case delta headers.
       expect(report.summary.errors).toBe(0);
       expect(report.summary.warnings).toBe(0);
       expect(report.summary.info).toBe(0);
+    });
+  });
+
+  describe('validateChangeDeltaSpecs - design.md requirement', () => {
+    it('should fail when design.md is missing', async () => {
+      const changeDir = path.join(testDir, 'test-change-no-design');
+      const specsDir = path.join(changeDir, 'specs', 'test-spec');
+      await fs.mkdir(specsDir, { recursive: true });
+
+      const deltaSpec = `# Test Spec
+
+## ADDED Requirements
+
+### Requirement: Test Feature
+The system SHALL implement a test feature.
+
+#### Scenario: Basic usage
+**Given** a condition
+**When** an action occurs
+**Then** a result happens`;
+
+      const specPath = path.join(specsDir, 'spec.md');
+      await fs.writeFile(specPath, deltaSpec);
+
+      const validator = new Validator();
+      const report = await validator.validateChangeDeltaSpecs(changeDir);
+
+      expect(report.valid).toBe(false);
+      expect(report.summary.errors).toBeGreaterThan(0);
+      expect(report.issues.some(i => 
+        i.path === 'design.md' && 
+        i.message.includes('design.md is required')
+      )).toBe(true);
+    });
+
+    it('should pass when design.md exists', async () => {
+      const changeDir = path.join(testDir, 'test-change-with-design');
+      const specsDir = path.join(changeDir, 'specs', 'test-spec');
+      await fs.mkdir(specsDir, { recursive: true });
+
+      const deltaSpec = `# Test Spec
+
+## ADDED Requirements
+
+### Requirement: Test Feature
+The system SHALL implement a test feature.
+
+#### Scenario: Basic usage
+**Given** a condition
+**When** an action occurs
+**Then** a result happens`;
+
+      const designMd = `## Context
+Test context
+
+## Goals / Non-Goals
+- Goals: Test goal
+
+## Decisions
+- Decision: Test decision`;
+
+      const specPath = path.join(specsDir, 'spec.md');
+      await fs.writeFile(specPath, deltaSpec);
+      const designPath = path.join(changeDir, 'design.md');
+      await fs.writeFile(designPath, designMd);
+
+      const validator = new Validator();
+      const report = await validator.validateChangeDeltaSpecs(changeDir);
+
+      expect(report.valid).toBe(true);
+      expect(report.issues.some(i => i.path === 'design.md')).toBe(false);
+    });
+
+    it('should fail in strict mode when design.md is missing', async () => {
+      const changeDir = path.join(testDir, 'test-change-no-design-strict');
+      const specsDir = path.join(changeDir, 'specs', 'test-spec');
+      await fs.mkdir(specsDir, { recursive: true });
+
+      const deltaSpec = `# Test Spec
+
+## ADDED Requirements
+
+### Requirement: Test Feature
+The system SHALL implement a test feature.
+
+#### Scenario: Basic usage
+**Given** a condition
+**When** an action occurs
+**Then** a result happens`;
+
+      const specPath = path.join(specsDir, 'spec.md');
+      await fs.writeFile(specPath, deltaSpec);
+
+      const validator = new Validator(true); // strict mode
+      const report = await validator.validateChangeDeltaSpecs(changeDir);
+
+      expect(report.valid).toBe(false);
+      expect(report.summary.errors).toBeGreaterThan(0);
+      expect(report.issues.some(i => 
+        i.level === 'ERROR' &&
+        i.path === 'design.md' && 
+        i.message.includes('design.md is required')
+      )).toBe(true);
     });
   });
 });

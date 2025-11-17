@@ -43,14 +43,14 @@ Skip proposal for:
 **Workflow**
 1. Review \`openspec/project.md\`, \`openspec list\`, and \`openspec list --specs\` to understand current context.
 2. Check for custom templates: If \`openspec/templates/\` directory exists, use those templates when creating files (see Custom Templates section below).
-3. Choose a unique verb-led \`change-id\` and scaffold \`proposal.md\`, \`tasks.md\`, optional \`design.md\`, and spec deltas under \`openspec/changes/<id>/\`.
+3. Choose a unique verb-led \`change-id\` and scaffold \`proposal.md\`, \`tasks.md\`, \`design.md\`, and spec deltas under \`openspec/changes/<id>/\`.
 4. Draft spec deltas using \`## ADDED|MODIFIED|REMOVED Requirements\` with at least one \`#### Scenario:\` per requirement.
 5. Run \`openspec validate <id> --strict\` and resolve any issues before sharing the proposal.
 
 ### Stage 2: Implementing Changes
 Track these steps as TODOs and complete them one by one.
 1. **Read proposal.md** - Understand what's being built
-2. **Read design.md** (if exists) - Review technical decisions
+2. **Read design.md** - Review technical decisions
 3. **Read tasks.md** - Get implementation checklist
 4. **Implement tasks sequentially** - Complete in order
 5. **Confirm completion** - Ensure every item in \`tasks.md\` is finished before updating statuses
@@ -134,7 +134,7 @@ openspec/
 │   ├── [change-name]/
 │   │   ├── proposal.md     # Why, what, impact
 │   │   ├── tasks.md        # Implementation checklist
-│   │   ├── design.md       # Technical decisions (optional; see criteria)
+│   │   ├── design.md       # Technical decisions (detailed design)
 │   │   └── specs/          # Delta changes
 │   │       └── [capability]/
 │   │           └── spec.md # ADDED/MODIFIED/REMOVED
@@ -230,14 +230,10 @@ If multiple capabilities are affected, create multiple delta files under \`chang
 - [ ] 1.4 Write tests
 \`\`\`
 
-5. **Create design.md when needed:**
-Create \`design.md\` if any of the following apply; otherwise omit it:
-- Cross-cutting change (multiple services/modules) or a new architectural pattern
-- New external dependency or significant data model changes
-- Security, performance, or migration complexity
-- Ambiguity that benefits from technical decisions before coding
+5. **Create design.md:**
+\`design.md\` is required for all changes. It contains the detailed technical design and decisions.
 
-Minimal \`design.md\` skeleton:
+Required \`design.md\` structure:
 \`\`\`markdown
 ## Context
 [Background, constraints, stakeholders]

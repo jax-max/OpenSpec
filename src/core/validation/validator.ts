@@ -104,6 +104,7 @@ export class Validator {
   /**
    * Validate delta-formatted spec files under a change directory.
    * Enforces:
+   * - design.md must exist (required for all changes)
    * - At least one delta across all files
    * - ADDED/MODIFIED: each requirement has SHALL/MUST and at least one scenario
    * - REMOVED: names only; no scenario/description required
@@ -112,6 +113,19 @@ export class Validator {
    */
   async validateChangeDeltaSpecs(changeDir: string): Promise<ValidationReport> {
     const issues: ValidationIssue[] = [];
+    
+    // Check for required design.md file
+    const designMdPath = path.join(changeDir, 'design.md');
+    try {
+      await fs.access(designMdPath);
+    } catch {
+      issues.push({
+        level: 'ERROR',
+        path: 'design.md',
+        message: 'design.md is required for all changes. It contains the detailed technical design and decisions.',
+      });
+    }
+    
     const specsDir = path.join(changeDir, 'specs');
     let totalDeltas = 0;
     const missingHeaderSpecs: string[] = [];

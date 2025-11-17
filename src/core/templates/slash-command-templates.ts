@@ -19,7 +19,7 @@ const proposalSteps = `**Steps**
    - **CRITICAL**: Check if \`openspec/templates/tasks.md.template\` exists
    - If exists: Read the template file and replace variables (\`{{changeId}}\` → actual change-id, \`{{date}}\` → current date in YYYY-MM-DD format)
    - If not exists: Use the default structure from \`openspec/AGENTS.md\` (see "Proposal Structure" section)
-5. Create \`design.md\` in \`openspec/changes/<id>/\` (only when needed—see criteria in \`openspec/AGENTS.md\`):
+5. Create \`design.md\` in \`openspec/changes/<id>/\` (required for all changes):
    - **CRITICAL**: Check if \`openspec/templates/design.md.template\` exists
    - If exists: Read the template file and replace variables (\`{{changeId}}\` → actual change-id, \`{{date}}\` → current date in YYYY-MM-DD format)
    - If not exists: Use the default structure from \`openspec/AGENTS.md\` (see "Proposal Structure" section)
@@ -43,7 +43,7 @@ const proposalReferences = `**Reference**
 
 const applySteps = `**Steps**
 Track these steps as TODOs and complete them one by one.
-1. Read \`openspec/changes/<id>/proposal.md\`, \`design.md\` (if present), and \`tasks.md\` to confirm scope and acceptance criteria.
+1. Read \`openspec/changes/<id>/proposal.md\`, \`design.md\`, and \`tasks.md\` to confirm scope and acceptance criteria.
 2. Work through tasks sequentially, keeping edits minimal and focused on the requested change.
 3. Confirm completion before updating statuses—make sure every item in \`tasks.md\` is finished.
 4. Update the checklist after all work is done so each task is marked \`- [x]\` and reflects reality.

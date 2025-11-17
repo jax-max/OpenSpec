@@ -259,7 +259,7 @@ openspec/
     └── add-2fa/              # AI creates this entire structure
         ├── proposal.md       # Why and what changes
         ├── tasks.md          # Implementation checklist
-        ├── design.md         # Technical decisions (optional)
+        ├── design.md         # Technical decisions (detailed design)
         └── specs/
             └── auth/
                 └── spec.md   # Delta showing additions
